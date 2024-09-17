@@ -1,0 +1,76 @@
+services:
+  us_server1:
+    container_name: us_server1
+    build:
+      target: builder
+    stop_signal: SIGINT
+    environment:
+      - GEO_LOCATION=US1
+    volumes:
+      - ./:/src
+    networks:
+      - backend
+
+  us_server2:
+    container_name: us_server2
+    build:
+      target: builder
+    stop_signal: SIGINT
+    environment:
+      - GEO_LOCATION=US2
+    volumes:
+      - ./:/src
+    networks:
+      - backend
+
+  us_backup:
+    container_name: us_backup
+    build:
+      target: builder
+    stop_signal: SIGINT
+    environment:
+      - GEO_LOCATION=US_BACKUP
+    volumes:
+      - ./:/src
+    networks:
+      - backend
+
+  uk_server1:
+    container_name: uk_server1
+    build:
+      target: builder
+    stop_signal: SIGINT
+    environment:
+      - GEO_LOCATION=UK1
+    volumes:
+      - ./:/src
+    networks:
+      - backend
+
+  other_server1:
+    container_name: other_server1
+    build:
+      target: builder
+    stop_signal: SIGINT
+    environment:
+      - GEO_LOCATION=OTHER_SERVER
+    volumes:
+      - ./:/src
+    networks:
+      - backend
+
+  nginx:
+    image: anroe/nginx-geoip2
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/logs:/var/log/nginx/
+      - ./geoip2/:/etc/geoip2/
+    ports:
+      - "80:80"
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
